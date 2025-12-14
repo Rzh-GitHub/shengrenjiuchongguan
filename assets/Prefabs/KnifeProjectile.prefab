@@ -1,7 +1,7 @@
 [
   {
     "__type__": "cc.Prefab",
-    "_name": "Bullet",
+    "_name": "KnifeProjectile",
     "_objFlags": 0,
     "__editorExtras__": {},
     "_native": "",
@@ -13,7 +13,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Bullet",
+    "_name": "KnifeProjectile",
     "_objFlags": 0,
     "__editorExtras__": {},
     "_parent": null,
@@ -83,7 +83,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 20,
-      "height": 5
+      "height": 4
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -201,7 +201,7 @@
     "_size": {
       "__type__": "cc.Size",
       "width": 20,
-      "height": 5
+      "height": 4
     },
     "_id": ""
   },
@@ -210,7 +210,7 @@
     "fileId": "95KD89ri9AHpR5VhpEuEx9"
   },
   {
-    "__type__": "8e6f3NgeqhN8qNUFTDVemSb",
+    "__type__": "2f8bf4Yj5ZBB5XR3pB/MuXk",
     "_name": "",
     "_objFlags": 0,
     "__editorExtras__": {},
@@ -221,13 +221,11 @@
     "__prefab": {
       "__id__": 11
     },
-    "speed": 300,
-    "damage": 30,
     "_id": ""
   },
   {
     "__type__": "cc.CompPrefabInfo",
-    "fileId": "3dkF4xjGVI7KHf0H3dUxyB"
+    "fileId": "22PhlaoWFD6p3VruQ8Q4rc"
   },
   {
     "__type__": "cc.PrefabInfo",

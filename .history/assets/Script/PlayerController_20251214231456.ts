@@ -10,17 +10,18 @@ export class PlayerController extends Component {
     @property
     pickupRange: number = 100;
 
-    // ✅ 公开这个变量，给武器用
-    // 初始化为 (1, 0, 0) 确保一开始有默认方向，而不是 (0,0,0)
-    public currentFacingDir: Vec3 = new Vec3(1, 0, 0);
-
     private _rigidbody: RigidBody2D | null = null;
     
-    // 输入状态开关
+    // 移除旧的 _moveDir，改用实时计算
+    // private _moveDir: Vec3 = new Vec3(0, 0, 0); 
+    
+    // ✅ 新增：使用 4 个开关记录按键状态
     private _up: boolean = false;
     private _down: boolean = false;
     private _left: boolean = false;
     private _right: boolean = false;
+
+    public facingDir: Vec3 = new Vec3(1, 0, 0); // 默认朝右
 
     start() {
         this._rigidbody = this.getComponent(RigidBody2D);
@@ -36,33 +37,37 @@ export class PlayerController extends Component {
     update(deltaTime: number) {
         if (!this._rigidbody) return;
 
-        // 1. 计算移动输入 (右减左，上减下)
-        const x = (this._right ? 1 : 0) - (this._left ? 1 : 0);
-        const y = (this._up ? 1 : 0) - (this._down ? 1 : 0);
+        // 1. 实时计算移动方向
+        // x = 右(1) - 左(1)
+        // y = 上(1) - 下(1)
+        const dirX = (this._right ? 1 : 0) - (this._left ? 1 : 0);
+        const dirY = (this._up ? 1 : 0) - (this._down ? 1 : 0);
 
-        if (x !== 0 || y !== 0) {
-            // --- 正在移动 ---
-
-            // 归一化输入向量
-            const moveDir = new Vec3(x, y, 0).normalize();
-
-            // 1. 更新刚体速度
+        // 如果有移动输入
+        if (dirX !== 0 || dirY !== 0) {
+            
+            // 创建方向向量并归一化
+            const moveDir = new Vec3(dirX, dirY, 0).normalize();
+            
+            // 设置速度
             const velocity = moveDir.clone().multiplyScalar(this.moveSpeed);
             this._rigidbody.linearVelocity = new Vec2(velocity.x, velocity.y);
 
-            // 2. 更新朝向记录 (这是给飞刀用的)
-            this.currentFacingDir = moveDir.clone();
+            // 2. 更新朝向
+            // 记录当前的标准化方向
+            this.facingDir = moveDir.clone();
 
-            // 3. 简单的左右翻转 (这是给美术表现用的)
-            if (x < 0) this.node.setScale(-1, 1, 1);
-            else if (x > 0) this.node.setScale(1, 1, 1);
-
+            // 3. 视觉翻转 (Left/Right)
+            if (dirX < 0) {
+                this.node.setScale(-1, 1, 1);
+            } else if (dirX > 0) {
+                this.node.setScale(1, 1, 1);
+            }
         } else {
-            // --- 停止移动 ---
+            // 停止移动
             this._rigidbody.linearVelocity = new Vec2(0, 0);
-
-            // ⚠️ 关键：这里什么都不做！
-            // 不要把 currentFacingDir 重置为 0，让它保留“最后一次移动的方向”
+            
+            // ⚠️ 保持 facingDir 不变，记住最后一次的方向
         }
     }
 
