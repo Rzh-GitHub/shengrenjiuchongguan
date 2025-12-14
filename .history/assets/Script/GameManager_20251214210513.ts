@@ -99,7 +99,7 @@ export class GameManager extends Component {
         // 这里简单处理，UI 在 Hierarchy 中越靠下，渲染越靠上
         if (canvas) {
             this._playerInstance.parent = canvas;
-            this._playerInstance.setSiblingIndex(1);
+            this._playerInstance.setSiblingIndex(0); // 放在最底层，别挡住 UI
         }
         this._playerInstance.setPosition(0, 0, 0);
     }
