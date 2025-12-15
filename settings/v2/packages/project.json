@@ -27,5 +27,15 @@
       "4": 2
     },
     "allowSleep": false
-  }
+  },
+  "layer": [
+    {
+      "name": "WORLD",
+      "value": 1
+    },
+    {
+      "name": "UI",
+      "value": 2
+    }
+  ]
 }

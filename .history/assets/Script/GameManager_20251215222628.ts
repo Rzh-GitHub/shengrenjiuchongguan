@@ -11,9 +11,6 @@ export class GameManager extends Component {
     @property({ type: Prefab })
     mapPrefab: Prefab = null!; // 拖入你的地图预制体
 
-    @property({ type: Node, tooltip: "所有游戏世界物体(玩家/敌人/地图)的父节点" })
-    worldRoot: Node = null!;
-
     onLoad() {
         // 这一步让其他脚本可以通过 GameManager.instance 访问我
         GameManager.instance = this;
@@ -102,6 +99,7 @@ export class GameManager extends Component {
         if (!this.mapPrefab) return;
         const map = instantiate(this.mapPrefab);
         
+        // 放入 GameWorld
         const worldRoot = director.getScene().getChildByName('WorldRoot');
         if (worldRoot) {
             map.parent = worldRoot;

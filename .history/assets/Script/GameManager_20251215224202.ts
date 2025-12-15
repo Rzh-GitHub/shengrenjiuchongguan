@@ -47,9 +47,13 @@ export class GameManager extends Component {
     // --------------------
 
     start() {
-        this.spawnMap(); // 先生成地图
+        if (!this.worldRoot) {
+            this.worldRoot = director.getScene().getChildByName('WorldRoot')!;
+        }
+        
+        this.spawnMap();
         this.spawnPlayer();
-        this.updateUI(); // 初始化 UI 显示
+        this.updateUI();
     }
 
     update(deltaTime: number) {
@@ -99,45 +103,42 @@ export class GameManager extends Component {
     // -------------------------
 
     spawnMap() {
-        if (!this.mapPrefab) return;
+        if (!this.mapPrefab || !this.worldRoot) return;
         const map = instantiate(this.mapPrefab);
         
-        const worldRoot = director.getScene().getChildByName('WorldRoot');
-        if (worldRoot) {
-            map.parent = worldRoot;
-            map.setSiblingIndex(0); // 确保地图在最底下 (背景)
-        }
+        // ✅ 正确：放在 WorldRoot 下
+        map.parent = this.worldRoot; 
+        map.setSiblingIndex(0); // 保证在最底层
     }
 
     spawnPlayer() {
-        if (!this.playerPrefab) return;
+        if (!this.playerPrefab || !this.worldRoot) return;
         this._playerInstance = instantiate(this.playerPrefab);
-        const canvas = director.getScene().getChildByName('Canvas');
-        // 注意：玩家要放在背景之上，但可能需要调整层级以防遮挡 UI
-        // 这里简单处理，UI 在 Hierarchy 中越靠下，渲染越靠上
-        if (canvas) {
-            this._playerInstance.parent = canvas;
-            this._playerInstance.setSiblingIndex(1);
-        }
+        
+        // ✅ 修正：Player 应该在 WorldRoot 下，而不是 Canvas 下
+        this._playerInstance.parent = this.worldRoot;
+        
+        // 设置位置 (确保 Player 的 Layer 属性在 Prefab 里已经设为 WORLD)
         this._playerInstance.setPosition(0, 0, 0);
     }
 
     spawnEnemy() {
-        if (!this.enemyPrefab || !this._playerInstance) return;
+        if (!this.enemyPrefab || !this._playerInstance || !this.worldRoot) return;
         
         const enemy = instantiate(this.enemyPrefab);
-        // 敌人也要放在 Canvas 下
-        const canvas = director.getScene().getChildByName('Canvas');
-        if (canvas) enemy.parent = canvas;
         
-        // 为了不遮挡 UI，最好把 UI 放在一个单独的 Layer 节点里，这里先简单通过 SiblingIndex 控制
-        // 实际上只要 UI 节点在 Hierarchy 里位于 Player/Enemy 下方即可
+        // ✅ 修正：Enemy 也要在 WorldRoot 下
+        enemy.parent = this.worldRoot;
 
+        // 生成逻辑保持不变...
         const angle = Math.random() * Math.PI * 2;
         const radius = math.randomRange(400, 600);
-        const offsetX = Math.cos(angle) * radius;
-        const offsetY = Math.sin(angle) * radius;
-        const spawnPos = this._playerInstance.position.clone().add3f(offsetX, offsetY, 0);
+        // 注意：因为 Player 和 Enemy 现在在同一个父节点下，可以直接用位置相加
+        const spawnPos = this._playerInstance.position.clone().add3f(
+            Math.cos(angle) * radius, 
+            Math.sin(angle) * radius, 
+            0
+        );
         enemy.setPosition(spawnPos);
 
         const enemyScript = enemy.getComponent(Enemy);

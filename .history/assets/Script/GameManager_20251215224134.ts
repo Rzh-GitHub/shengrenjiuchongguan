@@ -47,9 +47,13 @@ export class GameManager extends Component {
     // --------------------
 
     start() {
-        this.spawnMap(); // 先生成地图
+        if (!this.worldRoot) {
+            this.worldRoot = director.getScene().getChildByName('WorldRoot')!;
+        }
+        
+        this.spawnMap();
         this.spawnPlayer();
-        this.updateUI(); // 初始化 UI 显示
+        this.updateUI();
     }
 
     update(deltaTime: number) {

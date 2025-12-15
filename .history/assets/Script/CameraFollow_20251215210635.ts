@@ -1,5 +1,4 @@
 import { _decorator, Component, Node, Vec3, director } from 'cc';
-import { PlayerController } from './PlayerController';
 const { ccclass, property } = _decorator;
 
 @ccclass('CameraFollow')
@@ -25,7 +24,12 @@ export class CameraFollow extends Component {
         this.node.worldPosition = this._tempPos;
     }
 
-    findPlayer() {
-        this._target = PlayerController.instance?.node;
-    }
+findPlayer() {
+    const scene = director.getScene();
+    const world = scene.getChildByName('WorldRoot');
+    if (!world) return;
+
+    this._target = world.getChildByName('Player');
+}
+
 }
