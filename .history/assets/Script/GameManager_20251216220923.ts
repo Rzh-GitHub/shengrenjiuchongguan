@@ -9,7 +9,7 @@ export class GameManager extends Component {
     public static instance: GameManager = null!;
 
     @property({ type: Prefab })
-    mapPrefab: Prefab = null!; // 拖入你的地图预制体
+    backgroundPrefab: Prefab = null!; // 拖入你的地图预制体
 
     @property({ type: Node, tooltip: "所有游戏世界物体(玩家/敌人/地图)的父节点" })
     worldRoot: Node = null!;
@@ -99,32 +99,37 @@ export class GameManager extends Component {
     // -------------------------
 
     spawnMap() {
-        if (!this.mapPrefab) return;
-        const map = instantiate(this.mapPrefab);
+        if (!this.backgroundPrefab) return;
+        const map = instantiate(this.backgroundPrefab);
         
         const worldRoot = director.getScene().getChildByName('WorldRoot');
         if (worldRoot) {
             map.parent = worldRoot;
             map.setSiblingIndex(0); // 确保地图在最底下 (背景)
+            map.setPosition(map.x, map.y, 1100)
         }
     }
 
     spawnPlayer() {
         if (!this.playerPrefab) return;
         this._playerInstance = instantiate(this.playerPrefab);
-        // 放到 worldRoot 下，而不是 Canvas
-        if (this.worldRoot) {
-            this._playerInstance.parent = this.worldRoot;
+        const canvas = director.getScene().getChildByName('Canvas');
+        // 注意：玩家要放在背景之上，但可能需要调整层级以防遮挡 UI
+        // 这里简单处理，UI 在 Hierarchy 中越靠下，渲染越靠上
+        if (canvas) {
+            this._playerInstance.parent = canvas;
+            this._playerInstance.setSiblingIndex(1);
         }
         this._playerInstance.setPosition(0, 0, 0);
     }
 
     spawnEnemy() {
         if (!this.enemyPrefab || !this._playerInstance) return;
-            
+        
         const enemy = instantiate(this.enemyPrefab);
-        // 放到 worldRoot 下
-        if (this.worldRoot) enemy.parent = this.worldRoot;
+        // 敌人也要放在 Canvas 下
+        const canvas = director.getScene().getChildByName('Canvas');
+        if (canvas) enemy.parent = canvas;
         
         // 为了不遮挡 UI，最好把 UI 放在一个单独的 Layer 节点里，这里先简单通过 SiblingIndex 控制
         // 实际上只要 UI 节点在 Hierarchy 里位于 Player/Enemy 下方即可

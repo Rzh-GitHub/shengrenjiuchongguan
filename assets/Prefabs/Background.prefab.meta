@@ -2,12 +2,12 @@
   "ver": "1.1.50",
   "importer": "prefab",
   "imported": true,
-  "uuid": "2d765049-fe88-4afb-9703-ce36e010b10d",
+  "uuid": "457212e9-2e0b-43a9-b264-3feea5fd6870",
   "files": [
     ".json"
   ],
   "subMetas": {},
   "userData": {
-    "syncNodeName": "Bg"
+    "syncNodeName": "Background"
   }
 }

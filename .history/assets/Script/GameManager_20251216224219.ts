@@ -9,7 +9,7 @@ export class GameManager extends Component {
     public static instance: GameManager = null!;
 
     @property({ type: Prefab })
-    mapPrefab: Prefab = null!; // 拖入你的地图预制体
+    backgroundPrefab: Prefab = null!; // 拖入你的地图预制体
 
     @property({ type: Node, tooltip: "所有游戏世界物体(玩家/敌人/地图)的父节点" })
     worldRoot: Node = null!;
@@ -99,40 +99,35 @@ export class GameManager extends Component {
     // -------------------------
 
     spawnMap() {
-        if (!this.mapPrefab) return;
-        const map = instantiate(this.mapPrefab);
-        
-        const worldRoot = director.getScene().getChildByName('WorldRoot');
-        if (worldRoot) {
-            map.parent = worldRoot;
-            map.setSiblingIndex(0); // 确保地图在最底下 (背景)
-        }
+        if (!this.backgroundPrefab || !this.worldRoot) return;
+
+        const map = instantiate(this.backgroundPrefab);
+        map.parent = this.worldRoot;
+
+        // 放在最底层
+        map.setPosition(0, 0, -10);
     }
 
     spawnPlayer() {
-        if (!this.playerPrefab) return;
+        if (!this.playerPrefab || !this.worldRoot) return;
+
         this._playerInstance = instantiate(this.playerPrefab);
-        // 放到 worldRoot 下，而不是 Canvas
-        if (this.worldRoot) {
-            this._playerInstance.parent = this.worldRoot;
-        }
-        this._playerInstance.setPosition(0, 0, 0);
+        this._playerInstance.parent = this.worldRoot; // ✅ 回到世界
+        this._playerInstance.setPosition(0, 0, 10);
     }
 
+
     spawnEnemy() {
-        if (!this.enemyPrefab || !this._playerInstance) return;
-            
+        if (!this.enemyPrefab || !this._playerInstance || !this.worldRoot) return;
+
         const enemy = instantiate(this.enemyPrefab);
-        // 放到 worldRoot 下
-        if (this.worldRoot) enemy.parent = this.worldRoot;
-        
-        // 为了不遮挡 UI，最好把 UI 放在一个单独的 Layer 节点里，这里先简单通过 SiblingIndex 控制
-        // 实际上只要 UI 节点在 Hierarchy 里位于 Player/Enemy 下方即可
+        enemy.parent = this.worldRoot; // ✅ 回到世界
 
         const angle = Math.random() * Math.PI * 2;
         const radius = math.randomRange(400, 600);
         const offsetX = Math.cos(angle) * radius;
         const offsetY = Math.sin(angle) * radius;
+
         const spawnPos = this._playerInstance.position.clone().add3f(offsetX, offsetY, 0);
         enemy.setPosition(spawnPos);
 

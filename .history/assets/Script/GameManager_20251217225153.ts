@@ -121,7 +121,7 @@ export class GameManager extends Component {
 
     spawnEnemy() {
         if (!this.enemyPrefab || !this._playerInstance) return;
-            
+        
         const enemy = instantiate(this.enemyPrefab);
         // 放到 worldRoot 下
         if (this.worldRoot) enemy.parent = this.worldRoot;
