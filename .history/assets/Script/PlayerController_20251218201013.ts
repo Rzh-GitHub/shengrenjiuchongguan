@@ -38,7 +38,7 @@ export class PlayerController extends Component {
         input.off(Input.EventType.KEY_UP, this.onKeyUp, this);
     }
 
-    update(deltaTime: number) {
+update(deltaTime: number) {
         if (!this._rigidbody) return;
 
         // 1. 提取 8 方向输入
@@ -58,7 +58,7 @@ export class PlayerController extends Component {
             this._currentFacingDir.set(moveDir);
 
             // 【调试 LOG】
-            console.log(`移动方向: ${this.getDirectionName(x, y)} | 向量: ${moveDir.toString()}`);
+            // console.log(`移动方向: ${this.getDirectionName(x, y)} | 向量: ${moveDir.toString()}`);
 
             // 5. 视觉翻转
             if (x < 0) this.node.setScale(-1, 1, 1);

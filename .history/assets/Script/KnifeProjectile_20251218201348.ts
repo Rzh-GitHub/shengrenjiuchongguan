@@ -29,7 +29,7 @@ export class KnifeProjectile extends Component {
             collider.on(Contact2DType.BEGIN_CONTACT, this.onBeginContact, this);
         }
     }
-    
+        
     update(deltaTime: number) {
         if (this._speed > 0) {
             // 直接在当前世界位置上累加位移

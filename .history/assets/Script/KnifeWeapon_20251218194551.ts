@@ -34,26 +34,27 @@ export class KnifeWeapon extends Component {
     }
 
     fire() {
-        // 1. 获取射击方向 (初始化默认值)
-        let dir = new Vec3(1, 0, 0); 
+        // 1. 获取射击方向
+        let dir = new Vec3(1, 0, 0); // 默认保底
 
-        // 获取玩家实例 (使用你之前定义的单例)
-        const playerCtrl = PlayerController.instance;
-
+        // 如果是进化版，走索敌逻辑
         if (this.isEvolved) {
-            // 进化版：索敌逻辑
-            const target = this.findStrongestEnemy();
-            if (target) {
-                Vec3.subtract(dir, target.worldPosition, this.node.worldPosition);
-                dir.normalize();
-            } else if (playerCtrl) {
-                // 如果没找到敌人，保底使用玩家朝向
-                dir.set(playerCtrl.currentFacingDir);
-            }
-        } else {
-            // 普通版：直接读取玩家最后一次移动的朝向
-            if (playerCtrl) {
-                dir.set(playerCtrl.currentFacingDir);
+             const target = this.findStrongestEnemy();
+             if (target) {
+                 Vec3.subtract(dir, target.worldPosition, this.node.worldPosition);
+                 dir.normalize();
+             }
+        } 
+        // 否则，直接读取玩家的朝向
+        else {
+            // 获取 PlayerController (假设 Weapon 挂在 Player 下面)
+            // 注意：如果是挂在 Weapon_Node 子节点下，可能需要 parent.parent
+            // 这里用 getComponentInParent 最稳，它会向上查找直到找到组件
+            if (this.node.parent) {
+                const playerCtrl = this.node.parent.getComponent(PlayerController);
+                if (playerCtrl) {
+                    dir = playerCtrl.currentFacingDir.clone();
+                }
             }
         }
 
@@ -61,21 +62,21 @@ export class KnifeWeapon extends Component {
         if (!this.knifePrefab) return;
         const knife = instantiate(this.knifePrefab);
         
-        // 3. 设置层级 (推荐直接使用 GameManager 维护的 worldRoot)
-        const worldRoot = GameManager.instance.worldRoot;
-        if (worldRoot) {
-            knife.parent = worldRoot;
+        // 放在 GameWorld
+        // 假设层级是 GameWorld -> Player -> Weapon -> WeaponScript
+        // 我们想让子弹在 GameWorld 这一层
+        
+        const gameWorld = GameManager.instance.getWorldRoot()?.scene.getChildByName('GameWorld') || this.node.parent?.parent;
+        if (gameWorld) {
+             knife.parent = gameWorld;
         } else {
-            // 保底方案：如果 GameManager 还没初始化好，放在当前节点父级
-            knife.parent = this.node.parent;
+             knife.parent = this.node.parent; // 保底
         }
         
-        // 4. 设置初始位置与发射参数
         knife.worldPosition = this.node.worldPosition;
 
         const script = knife.getComponent(KnifeProjectile);
         if (script) {
-            // 传入 dir (已经是克隆的值或新创建的 Vec3)
             script.setup(dir, this.baseSpeed, this.damage);
         }
     }

@@ -41,46 +41,31 @@ export class PlayerController extends Component {
     update(deltaTime: number) {
         if (!this._rigidbody) return;
 
-        // 1. 提取 8 方向输入
         const x = (this._right ? 1 : 0) - (this._left ? 1 : 0);
         const y = (this._up ? 1 : 0) - (this._down ? 1 : 0);
 
         if (x !== 0 || y !== 0) {
-            // 2. 核心：归一化 (Normalize)
-            // 解决斜向移动速度变为 1.41 倍的问题，并统一 8 方向向量长度为 1
             const moveDir = new Vec3(x, y, 0).normalize();
 
-            // 3. 更新速度
             const velocity = moveDir.clone().multiplyScalar(this.moveSpeed);
             this._rigidbody.linearVelocity = new Vec2(velocity.x, velocity.y);
 
-            // 4. 更新朝向 (此时 currentFacingDir 必定是 8 个方向之一)
+            // 更新朝向
             this._currentFacingDir.set(moveDir);
 
-            // 【调试 LOG】
-            console.log(`移动方向: ${this.getDirectionName(x, y)} | 向量: ${moveDir.toString()}`);
+            // --- 调试 LOG ---
+            // console.log(`Input:(${x},${y}) | Facing:(${this._currentFacingDir.x.toFixed(2)}, ${this._currentFacingDir.y.toFixed(2)})`);
 
-            // 5. 视觉翻转
             if (x < 0) this.node.setScale(-1, 1, 1);
             else if (x > 0) this.node.setScale(1, 1, 1);
 
         } else {
-            // 停止移动，但保留最后一次移动的朝向
             this._rigidbody.linearVelocity = new Vec2(0, 0);
         }
-    }
 
-    // 辅助调试方法：识别当前是哪个方向
-    private getDirectionName(x: number, y: number): string {
-        if (x > 0 && y === 0) return "右";
-        if (x > 0 && y > 0)  return "右上";
-        if (x === 0 && y > 0) return "上";
-        if (x < 0 && y > 0)  return "左上";
-        if (x < 0 && y === 0) return "左";
-        if (x < 0 && y < 0)  return "左下";
-        if (x === 0 && y < 0) return "下";
-        if (x > 0 && y < 0)  return "右下";
-        return "未知";
+        // --- 视觉调试：在编辑器 Scene 窗口画一根红线显示朝向 ---
+        // 需要在顶部 import { geometry } from 'cc'; 并确保开启了物理调试或 gizmos
+        // 这里提供一个简单的坐标转换逻辑检查
     }
 
     onKeyDown(event: EventKeyboard) {

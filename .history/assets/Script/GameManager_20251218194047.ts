@@ -35,7 +35,7 @@ export class GameManager extends Component {
     // --------------
 
     @property
-    spawnInterval: number = 0.5;
+    spawnInterval: number = 1.0;
 
     private _playerInstance: Node | null = null;
     private _timer: number = 0;
@@ -103,7 +103,7 @@ export class GameManager extends Component {
         const map = instantiate(this.mapPrefab);
         
         if (this.worldRoot) {
-            map.parent = this.worldRoot;
+            map.parent = worldRoot;
             map.setSiblingIndex(0); // 确保地图在最底下 (背景)
         }
     }
@@ -137,9 +137,5 @@ export class GameManager extends Component {
 
         const enemyScript = enemy.getComponent(Enemy);
         if (enemyScript) enemyScript.setup(this._playerInstance);
-    }
-
-    public getWorldRoot(): Node | null {
-        return this.worldRoot;
     }
 }

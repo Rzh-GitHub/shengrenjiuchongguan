@@ -35,7 +35,7 @@ export class GameManager extends Component {
     // --------------
 
     @property
-    spawnInterval: number = 0.5;
+    spawnInterval: number = 1.0;
 
     private _playerInstance: Node | null = null;
     private _timer: number = 0;

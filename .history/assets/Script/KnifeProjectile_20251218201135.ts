@@ -29,15 +29,15 @@ export class KnifeProjectile extends Component {
             collider.on(Contact2DType.BEGIN_CONTACT, this.onBeginContact, this);
         }
     }
-    
+
     update(deltaTime: number) {
         if (this._speed > 0) {
-            // 直接在当前世界位置上累加位移
-            const currentPos = this.node.worldPosition;
             const moveStep = this._direction.clone().multiplyScalar(this._speed * deltaTime);
-            this.node.setWorldPosition(currentPos.x + moveStep.x, currentPos.y + moveStep.y, currentPos.z);
+            this.node.translate(moveStep);
         }
-        // ...
+
+        this._lifetime -= deltaTime;
+        if (this._lifetime <= 0 && this.node.isValid) this.node.destroy();
     }
 
     onBeginContact(self: Collider2D, other: Collider2D, contact: IPhysics2DContact | null) {
