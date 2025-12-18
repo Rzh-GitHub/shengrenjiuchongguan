@@ -166,9 +166,9 @@
       "__uuid__": "2cd6e589-9279-47c9-b135-3d50054a42d0",
       "__expectedType__": "cc.Prefab"
     },
-    "damage": 30,
-    "baseSpeed": 400,
-    "waveInterval": 2,
+    "damage": 10,
+    "baseSpeed": 2000,
+    "waveInterval": 1,
     "isEvolved": false,
     "_id": ""
   },
@@ -338,7 +338,7 @@
     "__prefab": {
       "__id__": 17
     },
-    "moveSpeed": 10,
+    "moveSpeed": 5,
     "pickupRange": 100,
     "_id": ""
   },

@@ -13,7 +13,7 @@ export class KnifeWeapon extends Component {
     knifePrefab: Prefab = null!;
 
     @property
-    damage: number = 10; // 确保这里是你想要的伤害
+    damage: number = 30; // 确保这里是你想要的伤害
 
     @property
     baseSpeed: number = 2000;

@@ -1,8 +1,7 @@
-import { _decorator, Component, Vec3, Node, Collider2D, Contact2DType, IPhysics2DContact, view, RigidBody2D, Vec2 } from 'cc';
+import { _decorator, Component, Vec3, Node, Collider2D, Contact2DType, IPhysics2DContact, view } from 'cc';
 const { ccclass, property } = _decorator;
 import { PoolManager } from './PoolManager'; // 确保路径正确
 import { PlayerController } from './PlayerController';
-import { Enemy } from './Enemy';
 
 @ccclass('KnifeProjectile')
 export class KnifeProjectile extends Component {
@@ -36,19 +35,6 @@ export class KnifeProjectile extends Component {
 
         // 4. 注册碰撞回调（如果 onLoad 里没注册过）
         // 注意：如果节点被 putNode 放入池子，它的所有 schedule 会被自动取消，但事件监听建议保持
-        const collider = this.getComponent(Collider2D);
-        if (collider) {
-            // 如果你的飞刀有 RigidBody2D，调用 body.syncPosition()
-            // 如果只有 Collider2D，调用以下方法：
-            collider.apply(); 
-        }
-        const body = this.getComponent(RigidBody2D);
-        if (body) {
-            // 3.8 正确的写法：linearVelocity 是一个 Vec2 对象
-            body.linearVelocity = new Vec2(0, 0); 
-            body.angularVelocity = 0;
-            body.wakeUp();
-        }
     }
 
     onLoad() {
@@ -92,11 +78,11 @@ export class KnifeProjectile extends Component {
         if (this._isDead) return;
 
         // 假设敌人的脚本叫 Enemy
-        const enemy = other.getComponent(Enemy);
-        if (enemy) {
-            enemy.takeDamage(this._damage);
-            this.recycle(); // 击中敌人后回收
-        }
+        // const enemy = other.getComponent(Enemy);
+        // if (enemy) {
+        //     enemy.takeDamage(this._damage);
+        //     this.recycle(); // 击中敌人后回收
+        // }
     }
 
     /**

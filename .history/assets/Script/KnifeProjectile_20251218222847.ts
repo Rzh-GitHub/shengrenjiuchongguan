@@ -47,7 +47,6 @@ export class KnifeProjectile extends Component {
             // 3.8 正确的写法：linearVelocity 是一个 Vec2 对象
             body.linearVelocity = new Vec2(0, 0); 
             body.angularVelocity = 0;
-            body.wakeUp();
         }
     }
 

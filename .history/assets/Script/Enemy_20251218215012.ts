@@ -9,7 +9,7 @@ export class Enemy extends Component {
     moveSpeed: number = 4; 
 
     @property
-    maxHp: number = 10; // 最大生命值 (比如子弹伤害10，需要打3下)
+    maxHp: number = 30; // 最大生命值 (比如子弹伤害10，需要打3下)
 
     private _currentHp: number = 0;
     private _player: Node | null = null;

@@ -1,4 +1,4 @@
-import { _decorator, Component, Vec3, Node, Collider2D, Contact2DType, IPhysics2DContact, view, RigidBody2D, Vec2 } from 'cc';
+import { _decorator, Component, Vec3, Node, Collider2D, Contact2DType, IPhysics2DContact, view } from 'cc';
 const { ccclass, property } = _decorator;
 import { PoolManager } from './PoolManager'; // 确保路径正确
 import { PlayerController } from './PlayerController';
@@ -41,13 +41,6 @@ export class KnifeProjectile extends Component {
             // 如果你的飞刀有 RigidBody2D，调用 body.syncPosition()
             // 如果只有 Collider2D，调用以下方法：
             collider.apply(); 
-        }
-        const body = this.getComponent(RigidBody2D);
-        if (body) {
-            // 3.8 正确的写法：linearVelocity 是一个 Vec2 对象
-            body.linearVelocity = new Vec2(0, 0); 
-            body.angularVelocity = 0;
-            body.wakeUp();
         }
     }
 
