@@ -1,26 +1,25 @@
 import { _decorator, Component, Input, input, EventKeyboard, KeyCode, RigidBody2D, Vec2, Vec3 } from 'cc';
 const { ccclass, property } = _decorator;
 
+// 定义方向轴枚举，用于逻辑判断
+enum Axis {
+    Horizontal,
+    Vertical
+}
+
 @ccclass('PlayerController')
 export class PlayerController extends Component {
 
     @property
-    moveSpeed: number = 5; 
+    moveSpeed: number = 5;
 
-    @property
-    pickupRange: number = 100;
-
-    // 内部私有变量，初始化为向右
+    // 内部状态：分别维护水平和垂直方向的按键栈
+    // 栈顶（数组末尾）永远是当前生效的最新方向
     private _stackX: number[] = [];
     private _stackY: number[] = [];
+
     private _currentFacingDir: Vec3 = new Vec3(1, 0, 0);
     private _rigidbody: RigidBody2D | null = null;
-
-    // 输入状态开关
-    private _up: boolean = false;
-    private _down: boolean = false;
-    private _left: boolean = false;
-    private _right: boolean = false;
 
     static instance: PlayerController;
 
@@ -37,35 +36,6 @@ export class PlayerController extends Component {
     onDestroy() {
         input.off(Input.EventType.KEY_DOWN, this.onKeyDown, this);
         input.off(Input.EventType.KEY_UP, this.onKeyUp, this);
-    }
-
-    update(deltaTime: number) {
-        if (!this._rigidbody) return;
-
-        // 1. 提取 8 方向输入
-        const x = this._stackX.length > 0 ? this._stackX[this._stackX.length - 1] : 0;
-        const y = this._stackY.length > 0 ? this._stackY[this._stackY.length - 1] : 0;
-
-        if (x !== 0 || y !== 0) {
-            // 2. 核心：归一化 (Normalize)
-            // 解决斜向移动速度变为 1.41 倍的问题，并统一 8 方向向量长度为 1
-            const moveDir = new Vec3(x, y, 0).normalize();
-
-            // 3. 更新速度
-            const velocity = moveDir.clone().multiplyScalar(this.moveSpeed);
-            this._rigidbody.linearVelocity = new Vec2(velocity.x, velocity.y);
-
-            // 4. 更新朝向 (此时 currentFacingDir 必定是 8 个方向之一)
-            this._currentFacingDir.set(moveDir);
-
-            // 5. 视觉翻转
-            if (x < 0) this.node.setScale(-1, 1, 1);
-            else if (x > 0) this.node.setScale(1, 1, 1);
-
-        } else {
-            // 停止移动，但保留最后一次移动的朝向
-            return this._currentFacingDir.clone();
-        }
     }
 
     onKeyDown(event: EventKeyboard) {
@@ -86,19 +56,45 @@ export class PlayerController extends Component {
         }
     }
 
+    // 压入输入：如果已存在则先删除再压入，确保它在栈顶（最新）
     private pushInput(stack: number[], value: number) {
         const index = stack.indexOf(value);
         if (index !== -1) stack.splice(index, 1);
         stack.push(value);
     }
 
+    // 移除输入
     private removeInput(stack: number[], value: number) {
         const index = stack.indexOf(value);
         if (index !== -1) stack.splice(index, 1);
     }
 
+    update(deltaTime: number) {
+        if (!this._rigidbody) return;
+
+        // 获取栈顶元素作为当前方向，若栈为空则为 0
+        const x = this._stackX.length > 0 ? this._stackX[this._stackX.length - 1] : 0;
+        const y = this._stackY.length > 0 ? this._stackY[this._stackY.length - 1] : 0;
+
+        if (x !== 0 || y !== 0) {
+            const moveDir = new Vec3(x, y, 0).normalize();
+            
+            // 更新速度
+            const velocity = moveDir.clone().multiplyScalar(this.moveSpeed);
+            this._rigidbody.linearVelocity = new Vec2(velocity.x, velocity.y);
+
+            // 更新朝向
+            this._currentFacingDir.set(moveDir);
+
+            // 视觉翻转（只根据水平输入 x 决定）
+            if (x < 0) this.node.setScale(-1, 1, 1);
+            else if (x > 0) this.node.setScale(1, 1, 1);
+        } else {
+            this._rigidbody.linearVelocity = Vec2.ZERO;
+        }
+    }
+
     public get currentFacingDir(): Vec3 {
-        // 返回克隆对象，防止外部修改返回值时影响到内部变量
         return this._currentFacingDir.clone();
     }
 }
