@@ -1,7 +1,7 @@
 import { _decorator, Component, Node, Vec3, RigidBody2D, Vec2, Sprite, Color, Prefab, instantiate, Enum } from 'cc';
 import { ExpGem } from './ExpGem';
 import { EnemyManager } from './EnemyManager';
-import { EnemyType } from './Enemy.enum';
+import { EnemyType } from './Enemy.Enum';
 const { ccclass, property } = _decorator;
 
 @ccclass('Enemy')

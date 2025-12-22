@@ -2,7 +2,6 @@ import { _decorator, Component, Prefab, instantiate, Node, math, director, Progr
 import { Enemy } from './Enemy';
 import { ILevelUpData, ItemType } from './ItemType.enum';
 import { AuroraBladeLevels, SunMoonLevels } from './AuroraBlade.interface';
-import { LevelUpUI } from './LevelUpUI';
 const { ccclass, property } = _decorator;
 
 @ccclass('GameManager')
@@ -96,9 +95,7 @@ export class GameManager extends Component {
         this.maxExp = Math.floor(this.maxExp * 1.2);
 
         // 播放升级音效或暂停游戏（以后实现）
-        if (LevelUpUI.instance) {
-            LevelUpUI.instance.showLevelUp();
-        }
+        console.log("Level Up! Now Level: " + this.currentLevel);
     }
 
     private updateUI() {

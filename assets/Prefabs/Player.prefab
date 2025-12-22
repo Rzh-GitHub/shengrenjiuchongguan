@@ -166,10 +166,10 @@
       "__uuid__": "2cd6e589-9279-47c9-b135-3d50054a42d0",
       "__expectedType__": "cc.Prefab"
     },
-    "damage": 10,
-    "baseSpeed": 2000,
+    "baseDamage": 10,
+    "baseSpeed": 800,
     "waveInterval": 1,
-    "isEvolved": false,
+    "shootInterval": 0.05,
     "_id": ""
   },
   {
@@ -310,7 +310,7 @@
     },
     "tag": 0,
     "_group": 2,
-    "_density": 100,
+    "_density": 1000,
     "_sensor": false,
     "_friction": 0,
     "_restitution": 0,

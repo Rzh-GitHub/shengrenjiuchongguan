@@ -2,7 +2,6 @@ import { _decorator, Component, Prefab, instantiate, Node, math, director, Progr
 import { Enemy } from './Enemy';
 import { ILevelUpData, ItemType } from './ItemType.enum';
 import { AuroraBladeLevels, SunMoonLevels } from './AuroraBlade.interface';
-import { LevelUpUI } from './LevelUpUI';
 const { ccclass, property } = _decorator;
 
 @ccclass('GameManager')
@@ -96,9 +95,7 @@ export class GameManager extends Component {
         this.maxExp = Math.floor(this.maxExp * 1.2);
 
         // 播放升级音效或暂停游戏（以后实现）
-        if (LevelUpUI.instance) {
-            LevelUpUI.instance.showLevelUp();
-        }
+        console.log("Level Up! Now Level: " + this.currentLevel);
     }
 
     private updateUI() {
@@ -160,21 +157,21 @@ export class GameManager extends Component {
     }
 
     public checkEvolve() {
-        // 获取极光刃和日月梭的实例
-        const knife = this.getWeapon<any>('KnifeWeapon');
-        const sunMoon = this.getPassive<any>('PassiveSunMoon');
+        EVOLVE_CONFIG.forEach(recipe => {
+            const weapon = this._ownedWeapons.get(recipe.weaponName);
+            const passive = this._ownedPassives.get(recipe.passiveName);
 
-        // 进化条件：极光刃达到 5 级（根据你给出的配置最高级是 5），且拥有日月梭
-        if (knife && knife.level >= 5 && sunMoon && sunMoon.level >= 1 && !knife.isEvolved) {
-            this.executeEvolve(knife);
-        }
+            // 满足条件：有武器且满级，有被动（至少1级），且尚未进化
+            if (weapon && weapon.level >= recipe.minWeaponLevel && passive && !weapon.isEvolved) {
+                this.executeEvolve(weapon);
+            }
+        });
     }
 
     private executeEvolve(weapon: any) {
-        // 调用武器自身的进化方法
-        if (weapon.evolve) {
-            weapon.evolve();
-        }
+        weapon.isEvolved = true;
+        console.log(`[进化] ${weapon.node.name} 觉醒为超武！`);
+        // TODO: 这里可以播放特效、更换武器图标等
     }
 
     public onPlayerUpgrade(itemName: string) {
