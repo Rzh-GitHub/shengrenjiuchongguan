@@ -57,7 +57,7 @@ public showLevelUp() {
             const cardScript = cardNode.getComponent(UpgradeCard);
             if (cardScript) {
                 cardScript.init(data, () => {
-                    this.handleUpgradeSelection(data);
+                    this.handleSelection(data);
                 });
             } else {
                 console.error(`错误：预制体 ${cardNode.name} 上找不到 UpgradeCard 脚本！`);
@@ -65,10 +65,8 @@ public showLevelUp() {
         });
     }
 
-    private handleUpgradeSelection(data: ILevelUpData) {
-        console.log(`玩家选择了升级: ${data.name}`);
-
-        // 1. 根据类型执行升级
+    private handleSelection(data: ILevelUpData) {
+        // 执行实际升级
         if (data.type === ItemType.Weapon) {
             const weapon = GameManager.instance.getWeapon<any>(data.id);
             if (weapon) weapon.upgrade();
@@ -77,11 +75,11 @@ public showLevelUp() {
             if (passive) passive.upgrade();
         }
 
-        // 2. 检查并执行进化判定
+        // 检查进化
         GameManager.instance.checkEvolve();
 
-        // 3. 关闭界面并恢复游戏
+        // 恢复游戏
         this.node.active = false;
-        director.resume(); 
+        director.resume();
     }
 }

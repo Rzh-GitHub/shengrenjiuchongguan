@@ -23,6 +23,7 @@ export class KnifeWeapon extends Component {
     private _timer: number = 0;
 
     start() {
+        debugger
         GameManager.instance.registerWeapon('KnifeWeapon', this);
     }
 
@@ -32,10 +33,6 @@ export class KnifeWeapon extends Component {
             this._timer = 0;
             this.startFireWave();
         }
-    }
-
-    public get maxLevel(): number {
-        return AuroraBladeLevels.length;
     }
 
     private async startFireWave() {
@@ -115,20 +112,5 @@ export class KnifeWeapon extends Component {
         this.isEvolved = true;
         this.waveInterval = 0.5; // 进化后大幅缩短发射间隔
         console.log("极光刃已进化为 -> 斩仙飞刀！");
-    }
-
-    public upgrade() {
-        if (this.level >= this.maxLevel) {
-            console.warn("极光刃已达到最高等级");
-            return;
-        }
-
-        this.level++;
-        
-        // 打印 Log 确认升级成功
-        const currentCfg = AuroraBladeLevels[this.level - 1];
-        console.log(`[升级成功] 极光刃提升至 Lv.${this.level}, 当前基础发射数量: ${currentCfg.amount}`);
-        
-        // 如果有升级音效或特效，可以在这里触发
     }
 }

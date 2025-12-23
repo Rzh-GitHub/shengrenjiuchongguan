@@ -239,11 +239,7 @@ export class GameManager extends Component {
         console.log("经过等级过滤后可用的升级项:", available);
 
         let results: ILevelUpData[] = [];
-        while (results.length < count && available.length > 0) {
-            let randomIndex = Math.floor(Math.random() * available.length);
-            results.push(available.splice(randomIndex, 1)[0]);
-        }
-
+        // ... 原有的随机逻辑 ...
         return results;
     }
 
