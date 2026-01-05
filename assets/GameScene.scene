@@ -1164,7 +1164,10 @@
     "cardContainer": {
       "__id__": 25
     },
-    "cardPrefab": null,
+    "cardPrefab": {
+      "__uuid__": "9d63c6ee-ff17-4ebe-9008-0f8c28b5db5a",
+      "__expectedType__": "cc.Prefab"
+    },
     "_id": "a5fhBR5HpGgapHxjgzQWYz"
   },
   {

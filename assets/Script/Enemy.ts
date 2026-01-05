@@ -10,7 +10,7 @@ export class Enemy extends Component {
     public type: EnemyType = EnemyType.Normal;
 
     @property
-    moveSpeed: number = 4; 
+    moveSpeed: number = 2; 
 
     @property
     maxHp: number = 10; // 最大生命值 (比如子弹伤害10，需要打3下)

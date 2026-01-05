@@ -217,7 +217,8 @@
     "__prefab": {
       "__id__": 11
     },
-    "moveSpeed": 4,
+    "type": 1,
+    "moveSpeed": 2,
     "maxHp": 10,
     "expGemPrefab": {
       "__uuid__": "e019cf4d-cb5f-43cd-9a29-f6371aa12d23",
