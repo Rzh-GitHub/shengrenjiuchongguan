@@ -1,4 +1,4 @@
-import { _decorator, Component, Node, Vec3, RigidBody2D, Vec2, Sprite, Color, Prefab, instantiate, Enum } from 'cc';
+import { _decorator, Component, Node, Vec3, RigidBody2D, Vec2, Sprite, Color, Prefab, instantiate, Enum, Collider2D } from 'cc';
 import { ExpGem } from './ExpGem';
 import { EnemyManager } from './EnemyManager';
 import { EnemyType } from './Enemy.enum';
@@ -46,15 +46,15 @@ export class Enemy extends Component {
     // --- 新增：受伤逻辑 ---
     public takeDamage(damage: number) {
         this._currentHp -= damage;
-        
-        // 播放受击特效
         this.playHitEffect();
-
-        // 死亡判定
+    
         if (this._currentHp <= 0) {
+            // 确保下一帧再执行销毁，避开物理引擎锁定时间
             this.scheduleOnce(() => {
-                this.die();
-            }, 0);
+                if (this.node && this.node.isValid) {
+                    this.die();
+                }
+            }, 0); 
         }
     }
 
@@ -73,7 +73,11 @@ export class Enemy extends Component {
     }
 
     private die() {
-        // 这里以后可以加死亡动画、掉落经验球等
+        // 1. 先关闭碰撞组件，让它从物理计算中移除
+        const collider = this.getComponent(Collider2D);
+        if (collider) collider.enabled = false;
+    
+        // 2. 正常执行掉落和销毁
         this.spawnGem();
         this.node.destroy();
     }

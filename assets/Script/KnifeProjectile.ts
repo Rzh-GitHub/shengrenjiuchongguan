@@ -101,7 +101,9 @@ export class KnifeProjectile extends Component {
                 this._pierceCount--;
                 // 穿透时不销毁，继续飞
             } else {
-                this.recycle(); // 穿透次数用完，回收
+                this.scheduleOnce(() => {
+                    this.recycle(); // 穿透次数用完，回收
+                }, 0)
             }
         }
     }
