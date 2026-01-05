@@ -2,7 +2,6 @@ import { _decorator, Component, Node as CCNode, Prefab, instantiate, director, L
 import { GameManager } from './GameManager';
 import { UpgradeCard } from './UpgradeCard'; // 下面会定义
 import { ILevelUpData, ItemType } from './ItemType.enum';
-import { KnifeWeapon } from './KnifeWeapon';
 const { ccclass, property } = _decorator;
 
 @ccclass('LevelUpUI')
@@ -22,20 +21,18 @@ export class LevelUpUI extends Component {
      */
     public showLevelUp() {
         console.log("=== [升级系统] 开始触发 ===");
-        const upgrades = GameManager.instance.getRandomUpgrades(3);
-        console.log("获取到的升级选项数据:", upgrades);
-
-        if (upgrades.length === 0) {
-            console.error("错误：获取到的升级选项为 0！请检查武器是否在 start 中 register，或配置是否正确。");
-            return;
-        }
         this.node.active = true;
         this.cardContainer.removeAllChildren();
         
         director.pause();
 
         // 检查 GameManager 里的原始数据
+        const upgrades = GameManager.instance.getRandomUpgrades(3);
+        console.log("获取到的升级选项数据:", upgrades);
 
+        if (upgrades.length === 0) {
+            console.error("错误：获取到的升级选项为 0！请检查武器是否在 start 中 register，或配置是否正确。");
+        }
 
         upgrades.forEach((data, index) => {
             if (!this.cardPrefab) {
@@ -72,10 +69,7 @@ export class LevelUpUI extends Component {
         console.log(`玩家选择了升级: ${data.name}`);
 
         // 1. 根据类型执行升级
-        if (data.id === 'KnifeWeaponEvolve') {
-            const knife = GameManager.instance.getWeapon<KnifeWeapon>('KnifeWeapon');
-            if (knife) knife.evolve(); // 执行进化
-        } else if (data.type === ItemType.Weapon) {
+        if (data.type === ItemType.Weapon) {
             const weapon = GameManager.instance.getWeapon<any>(data.id);
             if (weapon) weapon.upgrade();
         } else {

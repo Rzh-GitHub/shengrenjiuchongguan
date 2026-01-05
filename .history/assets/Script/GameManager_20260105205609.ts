@@ -5,7 +5,6 @@ import { AuroraBladeLevels, SunMoonLevels } from './AuroraBlade.interface';
 import { LevelUpUI } from './LevelUpUI';
 import { KnifeWeapon } from './KnifeWeapon';
 import { PassiveSunMoon } from './PassiveSunMoon';
-import { PlayerController } from './PlayerController';
 const { ccclass, property } = _decorator;
 
 @ccclass('GameManager')
@@ -67,7 +66,6 @@ export class GameManager extends Component {
         this.spawnMap(); // 先生成地图
         this.spawnPlayer();
         this.updateUI(); // 初始化 UI 显示
-        this.createNewPassive('PassiveSunMoon')
     }
 
     update(deltaTime: number) {
@@ -195,6 +193,8 @@ export class GameManager extends Component {
         this.checkEvolve();
     }
 
+// GameManager.ts
+
     public getAvailableUpgrades(): ILevelUpData[] {
         let pool: ILevelUpData[] = [];
 
@@ -239,20 +239,6 @@ export class GameManager extends Component {
             });
         }
 
-        // --- 优先判断：是否触发进化 ---
-        // 条件：极光刃满级(5) 且 日月梭至少1级 且 还没进化过
-        if (knife && knife.level >= 5 && sunMoon && sunMoon.level >= 1 && !knife.isEvolved) {
-            pool.push({
-                id: 'KnifeWeaponEvolve', // 使用特殊 ID 标记进化
-                type: ItemType.Weapon,
-                name: '斩仙飞刀',
-                desc: '极光刃终极进化！获得自动索敌与极致攻速',
-                iconPath: 'textures/icons/evolve',
-                level: 6
-            });
-            // 在吸血鬼幸存者逻辑中，如果出现进化，通常只给这一个选项，或者优先级最高
-            return pool; 
-        }
         return pool;
     }
 
@@ -304,24 +290,5 @@ export class GameManager extends Component {
             return this._ownedPassives.get(id) as T;
         }
         return null;
-    }
-
-    // GameManager.ts
-
-    public createNewPassive(id: string) {
-        // 假设你已经把 PassiveSunMoon 挂在 Player 下了
-        const playerNode = PlayerController.instance.node;
-        let passiveComp = playerNode.getComponentInChildren(PassiveSunMoon);
-
-        if (passiveComp) {
-            // 1. 激活组件
-            passiveComp.enabled = true;
-            // 2. 调用初始化注册（解决你 start 不跑的问题）
-            passiveComp.init(); 
-            // 3. 执行第一次升级（Lv.1）
-            passiveComp.upgrade(); 
-        } else {
-            console.error("在 Player 下没找到 PassiveSunMoon 组件，请检查预制体层级！");
-        }
     }
 }

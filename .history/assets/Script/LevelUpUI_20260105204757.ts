@@ -22,20 +22,18 @@ export class LevelUpUI extends Component {
      */
     public showLevelUp() {
         console.log("=== [升级系统] 开始触发 ===");
-        const upgrades = GameManager.instance.getRandomUpgrades(3);
-        console.log("获取到的升级选项数据:", upgrades);
-
-        if (upgrades.length === 0) {
-            console.error("错误：获取到的升级选项为 0！请检查武器是否在 start 中 register，或配置是否正确。");
-            return;
-        }
         this.node.active = true;
         this.cardContainer.removeAllChildren();
         
         director.pause();
 
         // 检查 GameManager 里的原始数据
+        const upgrades = GameManager.instance.getRandomUpgrades(3);
+        console.log("获取到的升级选项数据:", upgrades);
 
+        if (upgrades.length === 0) {
+            console.error("错误：获取到的升级选项为 0！请检查武器是否在 start 中 register，或配置是否正确。");
+        }
 
         upgrades.forEach((data, index) => {
             if (!this.cardPrefab) {

@@ -67,7 +67,6 @@ export class GameManager extends Component {
         this.spawnMap(); // 先生成地图
         this.spawnPlayer();
         this.updateUI(); // 初始化 UI 显示
-        this.createNewPassive('PassiveSunMoon')
     }
 
     update(deltaTime: number) {

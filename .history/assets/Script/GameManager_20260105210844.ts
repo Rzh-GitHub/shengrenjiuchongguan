@@ -67,7 +67,6 @@ export class GameManager extends Component {
         this.spawnMap(); // 先生成地图
         this.spawnPlayer();
         this.updateUI(); // 初始化 UI 显示
-        this.createNewPassive('PassiveSunMoon')
     }
 
     update(deltaTime: number) {
@@ -308,20 +307,20 @@ export class GameManager extends Component {
 
     // GameManager.ts
 
-    public createNewPassive(id: string) {
-        // 假设你已经把 PassiveSunMoon 挂在 Player 下了
-        const playerNode = PlayerController.instance.node;
-        let passiveComp = playerNode.getComponentInChildren(PassiveSunMoon);
+public createNewPassive(id: string) {
+    // 假设你已经把 PassiveSunMoon 挂在 Player 下了
+    const playerNode = PlayerController.instance.node;
+    let passiveComp = playerNode.getComponentInChildren(PassiveSunMoon);
 
-        if (passiveComp) {
-            // 1. 激活组件
-            passiveComp.enabled = true;
-            // 2. 调用初始化注册（解决你 start 不跑的问题）
-            passiveComp.init(); 
-            // 3. 执行第一次升级（Lv.1）
-            passiveComp.upgrade(); 
-        } else {
-            console.error("在 Player 下没找到 PassiveSunMoon 组件，请检查预制体层级！");
-        }
+    if (passiveComp) {
+        // 1. 激活组件
+        passiveComp.enabled = true;
+        // 2. 调用初始化注册（解决你 start 不跑的问题）
+        passiveComp.init(); 
+        // 3. 执行第一次升级（Lv.1）
+        passiveComp.upgrade(); 
+    } else {
+        console.error("在 Player 下没找到 PassiveSunMoon 组件，请检查预制体层级！");
     }
+}
 }
